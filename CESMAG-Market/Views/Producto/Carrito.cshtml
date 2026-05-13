@@ -1,0 +1,58 @@
+﻿@model List<(Tiendavirtual_Figueroa.Models.Producto producto, int cantidad)>
+
+@{
+    ViewData["Title"] = "Carrito de Compras";
+}
+
+<div class="container mt-4">
+
+    <h2>Carrito de Compras</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">El carrito está vacío.</div>
+        <a asp-action="Index" class="btn btn-secondary">Volver a Productos</a>
+    }
+    else
+    {
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.producto.Nombre</td>
+                        <td>@item.cantidad</td>
+                        <td>@item.producto.Precio.ToString("C")</td>
+                        <td>@((item.producto.Precio * item.cantidad).ToString("C"))</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="text-end fw-bold">Total:</td>
+                    <td class="fw-bold">@Model.Sum(i => i.producto.Precio * i.cantidad).ToString("C")</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        @* BUG CORREGIDO: era un <a href="/Producto/Comprar"> (GET).
+           Comprar ahora es POST, por eso se usa un form con AntiForgeryToken *@
+        <form asp-action="Comprar" method="post">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-success">
+                Confirmar Compra
+            </button>
+            <a asp-action="Index" class="btn btn-secondary ms-2">Seguir comprando</a>
+        </form>
+    }
+
+</div>

@@ -1,0 +1,49 @@
+@model List<Tiendavirtual_Figueroa.Models.Anuncio>
+@{
+    ViewData["Title"] = "Todos los anuncios";
+}
+
+<h4 class="mb-4">Moderación de anuncios</h4>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No hay anuncios publicados.</div>
+}
+else
+{
+    <table class="table table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Producto</th>
+                <th>Vendedor</th>
+                <th>Facultad</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var a in Model)
+            {
+                <tr>
+                    <td>@a.Id</td>
+                    <td>@a.Producto?.Nombre</td>
+                    <td>@a.Vendedor?.Nombre</td>
+                    <td>@a.Vendedor?.Facultad</td>
+                    <td>@a.FechaPublicacion.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        <span class="badge @(a.Estado == "Disponible" ? "bg-success" : "bg-secondary")">
+                            @a.Estado
+                        </span>
+                    </td>
+                    <td>
+                        <a asp-action="Delete" asp-route-id="@a.Id"
+                           class="btn btn-sm btn-outline-danger"
+                           onclick="return confirm('¿Eliminar este anuncio?')">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

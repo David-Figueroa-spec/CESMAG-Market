@@ -1,0 +1,136 @@
+@model List<Tiendavirtual_Figueroa.Models.Producto>
+@{
+    ViewData["Title"] = "Catálogo";
+}
+
+<div class="row mb-3 align-items-end">
+    <div class="col"><h4>Catálogo de materiales</h4></div>
+    <div class="col-auto">
+        <a asp-action="Create" class="btn btn-primary">+ Publicar</a>
+    </div>
+</div>
+
+<!-- Filtros -->
+<form method="get" asp-action="Index" class="row g-2 mb-4">
+    <div class="col-md-4">
+        <input type="text" name="busqueda" class="form-control" placeholder="Buscar producto..."
+               value="@ViewBag.BusquedaActual" />
+    </div>
+    <div class="col-md-3">
+        <select name="categoriaId" class="form-select">
+            <option value="">Todas las categorías</option>
+            @foreach (var cat in (List<Tiendavirtual_Figueroa.Models.Categoria>)ViewBag.Categorias)
+            {
+                <option value="@cat.Id" selected="@(ViewBag.CategoriaActual?.ToString() == cat.Id.ToString())">
+                    @cat.Nombre
+                </option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="estado" class="form-select">
+            <option value="">Todos los estados</option>
+            <option value="Disponible" selected="@(ViewBag.EstadoActual == "Disponible")">Disponible</option>
+            <option value="Vendido" selected="@(ViewBag.EstadoActual == "Vendido")">Vendido</option>
+        </select>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-outline-secondary">Filtrar</button>
+        <a asp-action="Index" class="btn btn-outline-danger">Limpiar</a>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No se encontraron productos con esos filtros.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Imagen</th>
+                    <th>Nombre</th>
+                    <th>Categoría</th>
+                    <th>Precio</th>
+                    <th>Vendedor</th>
+                    <th>Facultad</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model)
+                {
+                    var esPropio = Context.Session.GetString("UsuarioId") == p.UsuarioId.ToString();
+                    var esAdmin  = Context.Session.GetString("Rol") == "admin";
+
+                    <tr>
+                        <td>
+                            @if (!string.IsNullOrEmpty(p.ImagenUrl))
+                            {
+                                <img src="@p.ImagenUrl" style="width:60px;height:50px;object-fit:cover;" class="rounded" />
+                            }
+                            else { <span class="text-muted">–</span> }
+                        </td>
+                        <td>
+                            <strong>@p.Nombre</strong>
+                            @if (!string.IsNullOrEmpty(p.Descripcion))
+                            {
+                                <br /><small class="text-muted">@(p.Descripcion.Length > 60 ? p.Descripcion[..60] + "…" : p.Descripcion)</small>
+                            }
+                        </td>
+                        <td>@p.Categoria?.Nombre</td>
+                        <td>$@p.Precio.ToString("N0")</td>
+                        <td>
+                            @p.Usuario?.Nombre
+                            @if (p.Usuario?.Calificacion > 0)
+                            {
+                                <br /><small class="text-warning">★ @p.Usuario.Calificacion.ToString("F1")</small>
+                            }
+                        </td>
+                        <td><small>@p.Usuario?.Facultad</small></td>
+                        <td>
+                            <span class="badge @(p.Estado == "Disponible" ? "bg-success" : "bg-secondary")">
+                                @p.Estado
+                            </span>
+                        </td>
+                        <td>
+                            @if (esPropio || esAdmin)
+                            {
+                                <a asp-action="Edit" asp-route-id="@p.Id" class="btn btn-sm btn-outline-primary">Editar</a>
+
+                                <form asp-action="CambiarEstado" asp-route-id="@p.Id" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-warning">
+                                        @(p.Estado == "Disponible" ? "Marcar vendido" : "Reactivar")
+                                    </button>
+                                </form>
+
+                                <a asp-action="Delete" asp-route-id="@p.Id"
+                                   class="btn btn-sm btn-outline-danger"
+                                   onclick="return confirm('¿Eliminar este producto?')">Eliminar</a>
+                            }
+                            else
+                            {
+                                <div>
+                                    <button class="btn btn-sm btn-success"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#contacto-@p.Id">
+                                        Contactar
+                                    </button>
+                                    <div class="collapse mt-1" id="contacto-@p.Id">
+                                        <small class="d-block">📞 <strong>@p.Usuario?.Celular</strong></small>
+                                        <small class="d-block">✉️ @p.Usuario?.Correo</small>
+                                    </div>
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

@@ -1,0 +1,50 @@
+@{
+    ViewData["Title"] = "Iniciar sesión";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>CESMAG Market – Login</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+</head>
+<body class="bg-light">
+<div class="container" style="max-width:420px; margin-top:100px;">
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <h4 class="mb-1 text-center">CESMAG Market</h4>
+            <p class="text-center text-muted small mb-4">Marketplace estudiantil</p>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger py-2">@ViewBag.Error</div>
+            }
+            @if (TempData["Exito"] != null)
+            {
+                <div class="alert alert-success py-2">@TempData["Exito"]</div>
+            }
+
+            <form method="post" asp-action="Index" asp-controller="Login">
+                @Html.AntiForgeryToken()
+                <div class="mb-3">
+                    <label class="form-label">Correo institucional</label>
+                    <input type="email" name="correo" class="form-control" required placeholder="nombre@unicesmag.edu.co" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Contraseña</label>
+                    <input type="password" name="clave" class="form-control" required />
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+            </form>
+
+            <hr />
+            <p class="text-center small mb-0">
+                ¿No tienes cuenta?
+                <a asp-controller="Usuario" asp-action="Register">Regístrate aquí</a>
+            </p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

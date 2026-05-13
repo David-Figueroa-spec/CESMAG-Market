@@ -1,0 +1,77 @@
+@model Tiendavirtual_Figueroa.Models.Usuario
+@{
+    ViewData["Title"] = "Registro";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Registro – CESMAG Market</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+</head>
+<body class="bg-light">
+<div class="container" style="max-width:520px; margin-top:60px;">
+<div class="card shadow-sm">
+<div class="card-body p-4">
+
+    <h4 class="text-center mb-1">Crear cuenta</h4>
+    <p class="text-center text-muted small mb-4">Usa tu correo institucional <strong>@@unicesmag.edu.co</strong></p>
+
+    <form asp-action="Register" method="post">
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2"></div>
+
+        <div class="mb-3">
+            <label asp-for="Nombre" class="form-label">Nombre completo</label>
+            <input asp-for="Nombre" class="form-control" />
+            <span asp-validation-for="Nombre" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Correo" class="form-label">Correo institucional</label>
+            <input asp-for="Correo" class="form-control" type="email" placeholder="nombre@unicesmag.edu.co" />
+            <span asp-validation-for="Correo" class="text-danger small"></span>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label asp-for="Celular" class="form-label">Celular</label>
+                <input asp-for="Celular" class="form-control" type="number" placeholder="3XXXXXXXXX" />
+                <span asp-validation-for="Celular" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label asp-for="Facultad" class="form-label">Facultad</label>
+                <select asp-for="Facultad" class="form-select">
+                    <option value="">Selecciona...</option>
+                    <option>Arquitectura</option>
+                    <option>Diseño</option>
+                    <option>Ingeniería</option>
+                    <option>Artes</option>
+                    <option>Educación</option>
+                    <option>Ciencias Sociales</option>
+                </select>
+                <span asp-validation-for="Facultad" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Clave" class="form-label">Contraseña</label>
+            <input asp-for="Clave" class="form-control" type="password" />
+            <span asp-validation-for="Clave" class="text-danger small"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Registrarme</button>
+    </form>
+
+    <hr />
+    <p class="text-center small mb-0">
+        ¿Ya tienes cuenta? <a asp-controller="Login" asp-action="Index">Inicia sesión</a>
+    </p>
+</div>
+</div>
+</div>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

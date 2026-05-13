@@ -1,0 +1,46 @@
+@model List<Tiendavirtual_Figueroa.Models.Producto>
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+<div class="row mb-3">
+    <div class="col">
+        <h4>Bienvenido, @Context.Session.GetString("Usuario")</h4>
+        <p class="text-muted">Productos disponibles: <strong>@ViewBag.TotalDisponibles</strong> &nbsp;|&nbsp; Vendidos: <strong>@ViewBag.TotalVendidos</strong></p>
+    </div>
+    <div class="col-auto">
+        <a asp-controller="Producto" asp-action="Create" class="btn btn-primary">+ Publicar producto</a>
+    </div>
+</div>
+
+<h5 class="mb-3">Publicaciones recientes</h5>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No hay productos disponibles todavía.</div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-4 g-3">
+        @foreach (var p in Model)
+        {
+            <div class="col">
+                <div class="card h-100">
+                    @if (!string.IsNullOrEmpty(p.ImagenUrl))
+                    {
+                        <img src="@p.ImagenUrl" class="card-img-top" style="height:160px;object-fit:cover;" alt="@p.Nombre" />
+                    }
+                    <div class="card-body">
+                        <h6 class="card-title mb-1">@p.Nombre</h6>
+                        <p class="text-muted small mb-1">@p.Categoria?.Nombre</p>
+                        <p class="fw-bold text-success mb-1">$@p.Precio.ToString("N0")</p>
+                        <span class="badge @(p.Estado == "Disponible" ? "bg-success" : "bg-secondary")">@p.Estado</span>
+                    </div>
+                    <div class="card-footer">
+                        <a asp-controller="Producto" asp-action="Index" class="btn btn-outline-primary btn-sm w-100">Ver catálogo</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

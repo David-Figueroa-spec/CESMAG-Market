@@ -1,0 +1,56 @@
+@model List<Tiendavirtual_Figueroa.Models.Anuncio>
+@{
+    ViewData["Title"] = "Mis anuncios";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Mis publicaciones</h4>
+    <a asp-controller="Producto" asp-action="Create" class="btn btn-primary">+ Publicar nuevo</a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No has publicado ningún producto todavía.</div>
+}
+else
+{
+    <table class="table table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th>Precio</th>
+                <th>Fecha publicación</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var a in Model)
+            {
+                <tr>
+                    <td>@a.Producto?.Nombre</td>
+                    <td>@a.Producto?.Categoria?.Nombre</td>
+                    <td>$@a.Producto?.Precio.ToString("N0")</td>
+                    <td>@a.FechaPublicacion.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        <span class="badge @(a.Estado == "Disponible" ? "bg-success" : "bg-secondary")">
+                            @a.Estado
+                        </span>
+                    </td>
+                    <td>
+                        <a asp-controller="Producto" asp-action="Edit" asp-route-id="@a.ProductoId"
+                           class="btn btn-sm btn-outline-primary">Editar</a>
+
+                        <form asp-action="CambiarEstado" asp-route-id="@a.Id" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-outline-warning">
+                                @(a.Estado == "Disponible" ? "Marcar vendido" : "Reactivar")
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

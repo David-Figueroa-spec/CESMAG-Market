@@ -1,0 +1,47 @@
+@model List<Tiendavirtual_Figueroa.Models.Categoria>
+@{
+    ViewData["Title"] = "Categorías";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Categorías</h4>
+    @if (Context.Session.GetString("Rol") == "admin")
+    {
+        <a asp-action="Create" class="btn btn-primary">+ Nueva categoría</a>
+    }
+</div>
+
+<table class="table table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Estado</th>
+            @if (Context.Session.GetString("Rol") == "admin")
+            {
+                <th>Acciones</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>@c.Id</td>
+                <td>@c.Nombre</td>
+                <td>@c.Descripcion</td>
+                <td><span class="badge @(c.Estado == "Activo" ? "bg-success" : "bg-secondary")">@c.Estado</span></td>
+                @if (Context.Session.GetString("Rol") == "admin")
+                {
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@c.Id" class="btn btn-sm btn-outline-primary">Editar</a>
+                        <a asp-action="Delete" asp-route-id="@c.Id"
+                           class="btn btn-sm btn-outline-danger"
+                           onclick="return confirm('¿Eliminar categoría @c.Nombre?')">Eliminar</a>
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>

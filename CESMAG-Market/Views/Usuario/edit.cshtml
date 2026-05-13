@@ -1,0 +1,74 @@
+@model Tiendavirtual_Figueroa.Models.Usuario
+@{
+    ViewData["Title"] = "Editar usuario";
+}
+
+<div class="row justify-content-center">
+<div class="col-md-6">
+<h4 class="mb-4">Editar usuario</h4>
+
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+    <input asp-for="Id" type="hidden" />
+
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2"></div>
+
+    <div class="mb-3">
+        <label asp-for="Nombre" class="form-label">Nombre</label>
+        <input asp-for="Nombre" class="form-control" />
+        <span asp-validation-for="Nombre" class="text-danger small"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Correo" class="form-label">Correo institucional</label>
+        <input asp-for="Correo" class="form-control" type="email" />
+        <span asp-validation-for="Correo" class="text-danger small"></span>
+    </div>
+    <div class="row">
+        <div class="col mb-3">
+            <label asp-for="Celular" class="form-label">Celular</label>
+            <input asp-for="Celular" class="form-control" type="number" />
+        </div>
+        <div class="col mb-3">
+            <label asp-for="Facultad" class="form-label">Facultad</label>
+            <select asp-for="Facultad" class="form-select">
+                <option value="">Selecciona...</option>
+                <option>Arquitectura</option>
+                <option>Diseño</option>
+                <option>Ingeniería</option>
+                <option>Artes</option>
+                <option>Educación</option>
+                <option>Ciencias Sociales</option>
+            </select>
+        </div>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Clave" class="form-label">Nueva contraseña <small class="text-muted">(dejar vacío para no cambiar)</small></label>
+        <input asp-for="Clave" class="form-control" type="password" />
+    </div>
+
+    @if (Context.Session.GetString("Rol") == "admin")
+    {
+        <div class="row">
+            <div class="col mb-3">
+                <label asp-for="Rol" class="form-label">Rol</label>
+                <select asp-for="Rol" class="form-select">
+                    <option value="estudiante">Estudiante</option>
+                    <option value="admin">Administrador</option>
+                </select>
+            </div>
+            <div class="col mb-3 d-flex align-items-end">
+                <div class="form-check mb-2">
+                    <input asp-for="Validado" class="form-check-input" type="checkbox" />
+                    <label asp-for="Validado" class="form-check-label">Usuario validado</label>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+    </div>
+</form>
+</div>
+</div>
